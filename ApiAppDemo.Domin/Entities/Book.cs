@@ -12,5 +12,5 @@ public class Book : AuditableEntity
     public string Title { get; set; }
     public string Description { get; set; }
     public Borrower? Borrower { get; set; }
-    public int BorrowerId { get;set; }
+    public int? BorrowerId { get;set; }
 }
