@@ -4,20 +4,20 @@ using ApiAppDemo.Persistance;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace ApiAppDemo.Application.Handlers.Authors.AddAuthor;
+namespace ApiAppDemo.Application.Handlers.Borrowers.AddBorrower;
 
-public class AddAuthorHandler : ICommandHandler<AddAuthor, AddAuthorResponse>
+public class AddBorrowerHandler : ICommandHandler<AddBorrower, AddBorrowerResponse>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly AppDbContext _context;
 
-    public AddAuthorHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    public AddBorrowerHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
     {
         _httpContextAccessor = httpContextAccessor;
         _context = deliveryDbContext;
     }
 
-    public async Task<AddAuthorResponse> Handle(AddAuthor request, CancellationToken cancellationToken)
+    public async Task<AddBorrowerResponse> Handle(AddBorrower request, CancellationToken cancellationToken)
     {
         //var user = _httpContextAccessor.HttpContext?.User;
         //if (user == null)
@@ -27,7 +27,7 @@ public class AddAuthorHandler : ICommandHandler<AddAuthor, AddAuthorResponse>
         //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         //var userName = user.Identities.FirstOrDefault().Name;
 
-        var newAuthor = new Author
+        var newBorrower = new Borrower
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -39,9 +39,9 @@ public class AddAuthorHandler : ICommandHandler<AddAuthor, AddAuthorResponse>
         };
 
 
-        _context.Authors.Add(newAuthor);
+        _context.Borrowers.Add(newBorrower);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new AddAuthorResponse();
+        return new AddBorrowerResponse();
     }
 }

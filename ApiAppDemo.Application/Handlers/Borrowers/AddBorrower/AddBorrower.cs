@@ -1,16 +1,17 @@
 ﻿using static ApiAppDemo.Application.Interfaces.MediatR.ICommand;
 
-namespace ApiAppDemo.Application.Handlers.Authors.AddAuthor;
+namespace ApiAppDemo.Application.Handlers.Borrowers.AddBorrower;
 
-public class AddAuthor : ICommand<AddAuthorResponse>
+public class AddBorrower : ICommand<AddBorrowerResponse>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTime DateOfBirth { get; set; }
 
-    public AddAuthor(AddAuthorParameters parameters)
+    public AddBorrower(AddBorrowerParameters parameters)
     {
         FirstName = parameters.FirstName;
         LastName = parameters.LastName;
+        DateOfBirth = parameters.DateOfBirth;
     }
 }

@@ -1,17 +1,17 @@
 ﻿using static ApiAppDemo.Application.Interfaces.MediatR.ICommand;
 
-namespace ApiAppDemo.Application.Handlers.Authors.EditAuthor;
+namespace ApiAppDemo.Application.Handlers.Borrowers.EditBorrower;
 
-public class EditAuthor : ICommand<EditAuthorResponse>
+public class EditBorrower : ICommand<EditBorrowerResponse>
 {
-    public int AuthorId { get; set; }
+    public int BorrowerId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTime DateOfBirth { get; set; }
 
-    public EditAuthor(EditAuthorParameters parameters)
+    public EditBorrower(EditBorrowerParameters parameters)
     {
-        AuthorId = parameters.AuthorId;
+        BorrowerId = parameters.BorrowerId;
         FirstName = parameters.FirstName;
         LastName = parameters.LastName;
         DateOfBirth = parameters.DateOfBirth;

@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Book> Books { get; set; }
     public DbSet<Author> Authors { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Borrower> Borrowers { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -36,10 +37,21 @@ public class AppDbContext : DbContext
             entity.HasKey(p => p.Id);
         });
 
+        builder.Entity<Borrower>(entity =>
+        {
+            entity.HasKey(p => p.Id);
+        });
+
         builder.Entity<Book>()
             .HasOne(c => c.Author)
             .WithMany()
             .HasForeignKey(l => l.AuthorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Book>()
+            .HasOne(c => c.Borrower)
+            .WithMany()
+            .HasForeignKey(l => l.BorrowerId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Book>()

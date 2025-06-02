@@ -1,6 +1,6 @@
-﻿namespace ApiAppDemo.Application.Handlers.Authors.AddAuthor;
+﻿namespace ApiAppDemo.Application.Handlers.Borrowers.AddBorrower;
 
-public class AddAuthorParameters
+public class AddBorrowerParameters
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
