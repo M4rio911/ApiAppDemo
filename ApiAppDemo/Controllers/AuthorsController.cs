@@ -49,7 +49,7 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpPost]
-    [Route("AddAuthor")]
+    [Route("addAuthor")]
     public async Task<IActionResult> AddAuthor([FromBody] AddAuthorParameters parameters)
     {
         if (!ModelState.IsValid)
@@ -61,7 +61,7 @@ public class AuthorsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete]
+    [HttpPost]
     [Route("removeAuthor")]
     public async Task<IActionResult> RemoveAuthor([FromBody] RemoveAuthorParameters parameters)
     {

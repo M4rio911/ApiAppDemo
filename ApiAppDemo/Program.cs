@@ -28,7 +28,7 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()
-        .SetIsOriginAllowed(_ => true);
+        .WithOrigins("http://localhost:5173");
     });
 });
 
@@ -55,7 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

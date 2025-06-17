@@ -12,5 +12,6 @@ public class AddAuthor : ICommand<AddAuthorResponse>
     {
         FirstName = parameters.FirstName;
         LastName = parameters.LastName;
+        DateOfBirth = parameters.DateOfBirth;
     }
 }

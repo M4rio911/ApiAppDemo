@@ -5,7 +5,7 @@ namespace ApiAppDemo.Application.Handlers.Categories.GetCategories;
 
 public class GetCategoriesResponse : BaseResponse
 {
-    public IEnumerable<Category?> Categoryies { get; set; }
+    public IEnumerable<Category?> Categories { get; set; }
     public GetCategoriesResponse() : base() { }
     public GetCategoriesResponse(List<string> errors) : base(errors) { }
 }

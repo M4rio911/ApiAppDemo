@@ -61,7 +61,7 @@ public class CategoryController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete]
+    [HttpPost]
     [Route("removeCategory")]
     public async Task<IActionResult> RemoveCategory([FromBody] RemoveCategoryParameters parameters)
     {

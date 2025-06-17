@@ -4,20 +4,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace ApiAppDemo.Application.Handlers.Books.GetBooks;
+namespace ApiAppDemo.Application.Handlers.Books.GetBook;
 
-public class GetBorrowersHandler : ICommandHandler<GetBooks, GetBooksResponse>
+public class GetBookHandler : ICommandHandler<GetBook, GetBookResponse>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly AppDbContext _context;
 
-    public GetBorrowersHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    public GetBookHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
     {
         _httpContextAccessor = httpContextAccessor;
         _context = deliveryDbContext;
     }
 
-    public async Task<GetBooksResponse> Handle(GetBooks request, CancellationToken cancellationToken)
+    public async Task<GetBookResponse> Handle(GetBook request, CancellationToken cancellationToken)
     {
         //var user = _httpContextAccessor.HttpContext?.User;
         //if (user == null)
@@ -27,9 +27,10 @@ public class GetBorrowersHandler : ICommandHandler<GetBooks, GetBooksResponse>
         //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         //var userName = user.Identities.FirstOrDefault().Name;
 
-        var dbBooks = await _context.Books
-            .ToListAsync(cancellationToken);
+        var dbBook = await _context.Books
+            .Where(x => x.Id == request.Id)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        return new GetBooksResponse() { Books = dbBooks };
+        return new GetBookResponse() { Book = dbBook };
     }
 }

@@ -61,7 +61,7 @@ public class BorrowersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete]
+    [HttpPost]
     [Route("removeBorrower")]
     public async Task<IActionResult> RemoveBorrower([FromBody] RemoveBorrowerParameters parameters)
     {

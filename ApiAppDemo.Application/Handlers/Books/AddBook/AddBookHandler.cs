@@ -33,6 +33,7 @@ public class AddBookHandler : ICommandHandler<AddBook, AddBookResponse>
             CategoryId = request.CategoryId,
             Title = request.Title,
             Description = request.Description,
+            IsBorrowed = false,
 
             //CreatedBy = userName,
             //ModifiedBy = userName
