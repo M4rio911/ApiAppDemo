@@ -14,7 +14,6 @@ namespace ApiAppDemo.Controllers;
 [Produces("application/json")]
 [Route("[controller]")]
 [ApiController]
-//[Authorize]
 public class BooksController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -52,6 +51,7 @@ public class BooksController : ControllerBase
 
     [HttpPost]
     [Route("AddBook")]
+    [Authorize]
     public async Task<IActionResult> AddBook([FromBody] AddBookParameters parameters)
     {
         if (!ModelState.IsValid)
@@ -65,6 +65,7 @@ public class BooksController : ControllerBase
 
     [HttpPost]
     [Route("removeBook")]
+    [Authorize]
     public async Task<IActionResult> RemoveBook([FromBody] RemoveBookParameters parameters)
     {
         if (!ModelState.IsValid)
@@ -78,6 +79,7 @@ public class BooksController : ControllerBase
 
     [HttpPost]
     [Route("editBook")]
+    [Authorize]
     public async Task<IActionResult> EditBook([FromBody] EditBookParameters parameters)
     {
         if (!ModelState.IsValid)
@@ -91,6 +93,7 @@ public class BooksController : ControllerBase
 
     [HttpPost]
     [Route("returnBook")]
+    [Authorize]
     public async Task<IActionResult> ReturnBook([FromBody] ReturnBookParameters parameters)
     {
         if (!ModelState.IsValid)
@@ -104,6 +107,7 @@ public class BooksController : ControllerBase
 
     [HttpPost]
     [Route("borrowBook")]
+    [Authorize]
     public async Task<IActionResult> BorrowBook([FromBody] BorrowBookParameters parameters)
     {
         if (!ModelState.IsValid)

@@ -50,6 +50,7 @@ public class CategoryController : ControllerBase
 
     [HttpPost]
     [Route("AddCategory")]
+    [Authorize]
     public async Task<IActionResult> AddCategory([FromBody] AddCategoryParameters parameters)
     {
         if (!ModelState.IsValid)
@@ -63,6 +64,7 @@ public class CategoryController : ControllerBase
 
     [HttpPost]
     [Route("removeCategory")]
+    [Authorize]
     public async Task<IActionResult> RemoveCategory([FromBody] RemoveCategoryParameters parameters)
     {
         if (!ModelState.IsValid)
@@ -76,6 +78,7 @@ public class CategoryController : ControllerBase
 
     [HttpPost]
     [Route("editCategory")]
+    [Authorize]
     public async Task<IActionResult> EditCategory([FromBody] EditCategoryParameters parameters)
     {
         if (!ModelState.IsValid)

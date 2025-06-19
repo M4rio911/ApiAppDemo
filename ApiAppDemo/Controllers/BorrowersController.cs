@@ -50,6 +50,7 @@ public class BorrowersController : ControllerBase
 
     [HttpPost]
     [Route("AddBorrower")]
+    [Authorize]
     public async Task<IActionResult> AddBorrower([FromBody] AddBorrowerParameters parameters)
     {
         if (!ModelState.IsValid)
@@ -63,6 +64,7 @@ public class BorrowersController : ControllerBase
 
     [HttpPost]
     [Route("removeBorrower")]
+    [Authorize]
     public async Task<IActionResult> RemoveBorrower([FromBody] RemoveBorrowerParameters parameters)
     {
         if (!ModelState.IsValid)
@@ -76,6 +78,7 @@ public class BorrowersController : ControllerBase
 
     [HttpPost]
     [Route("editBorrower")]
+    [Authorize]
     public async Task<IActionResult> EditBorrower([FromBody] EditBorrowerParameters parameters)
     {
         if (!ModelState.IsValid)

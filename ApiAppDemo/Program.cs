@@ -1,7 +1,10 @@
 using ApiAppDemo.Application;
 using ApiAppDemo.Persistance;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +44,43 @@ builder.Services.AddDbContext<AppDbContext>(options =>
    ));
 
 //APP
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        //ValidIssuer = jwtSettings["Issuer"],
+        //ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            if (context.Request.Headers.ContainsKey("Authorization"))
+            {
+                var token = context.Request.Headers["Authorization"].ToString();
+                if (token.StartsWith("Bearer "))
+                    context.Token = token.Substring("Bearer ".Length).Trim();
+            }
+
+            return Task.CompletedTask;
+        }
+    };
+});
+
+builder.Services.Configure<AppUserOptions>(
+    builder.Configuration.GetSection("AppUser"));
+
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
