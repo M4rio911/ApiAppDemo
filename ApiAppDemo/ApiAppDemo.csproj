@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ApiAppDemo.Application\ApiAppDemo.Application.csproj" />
+    <ProjectReference Include="..\ApiAppDemo.Infrastructure\ApiAppDemo.Infrastructure.csproj" />
     <ProjectReference Include="..\ApiAppDemo.Persistance\ApiAppDemo.Persistance.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,6 @@
 using ApiAppDemo.Application;
+using ApiAppDemo.Application.Interfaces.Repositories;
+using ApiAppDemo.Infrastructure.Repositories;
 using ApiAppDemo.Persistance;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +82,12 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.Configure<AppUserOptions>(
     builder.Configuration.GetSection("AppUser"));
+
+builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IBorrowerRepository, BorrowerRepository>();
+builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
+builder.Services.AddTransient<IBookRepository, BookRepository>();
+
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();

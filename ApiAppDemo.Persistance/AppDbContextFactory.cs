@@ -1,21 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
+﻿using DeliveryApp.Persistance;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiAppDemo.Persistance;
 
-public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+public class AppDbContextFactory : AppDbContextFactoryBase<AppDbContext>
 {
-    public AppDbContext CreateDbContext(string[] args)
+    protected override AppDbContext CreateNewInstance(DbContextOptions<AppDbContext> options)
     {
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ApiAppDemo"))
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-
-        return new AppDbContext(optionsBuilder.Options);
+        return new AppDbContext(options);
     }
 }

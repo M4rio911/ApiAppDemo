@@ -1,4 +1,5 @@
 ﻿using ApiAppDemo.Application.Interfaces.MediatR;
+using ApiAppDemo.Application.Interfaces.Repositories;
 using ApiAppDemo.Persistance;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -8,38 +9,23 @@ namespace ApiAppDemo.Application.Handlers.Books.EditBook;
 
 public class EditBookHandler : ICommandHandler<EditBook, EditBookResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
-
-    public EditBookHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    private readonly IBookRepository _bookRepository;
+    public EditBookHandler(IBookRepository bookRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _bookRepository = bookRepository;
     }
 
     public async Task<EditBookResponse> Handle(EditBook request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
+        var book = await _bookRepository.GetByIdAsync(request.BookId, cancellationToken);
 
-        var dbBook = await _context.Books
-            .Where(x => x.Id == request.BookId)
-            .FirstOrDefaultAsync(cancellationToken);
+        if (book is null)
+            return new EditBookResponse("No book found");
 
-        dbBook.ModifiedBy = "test";
-        dbBook.AuthorId = request.AuthorId;
-        dbBook.CategoryId = request.CategoryId;
-        dbBook.BorrowerId = request.BorrowerId;
-        dbBook.Description = request.Description;
-        dbBook.Title = request.Title;
-
-
-        await _context.SaveChangesAsync(cancellationToken);
+        book.Title = request.Title;
+        book.Description = request.Description;
+        book.AuthorId = request.AuthorId;
+        book.CategoryId = request.CategoryId;
 
         return new EditBookResponse();
     }

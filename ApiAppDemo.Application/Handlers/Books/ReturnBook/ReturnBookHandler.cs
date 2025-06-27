@@ -1,4 +1,5 @@
 ﻿using ApiAppDemo.Application.Interfaces.MediatR;
+using ApiAppDemo.Application.Interfaces.Repositories;
 using ApiAppDemo.Persistance;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -8,39 +9,21 @@ namespace ApiAppDemo.Application.Handlers.Books.ReturnBook;
 
 public class ReturnBookHandler : ICommandHandler<ReturnBook, ReturnBookResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
-
-    public ReturnBookHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    private readonly IBookRepository _bookRepository;
+    public ReturnBookHandler(IBookRepository bookRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _bookRepository = bookRepository;
     }
 
     public async Task<ReturnBookResponse> Handle(ReturnBook request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
-
-        var dbBook = await _context.Books
-            .Where(x => x.Id == request.BookId)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (dbBook == null)
+        var book = await _bookRepository.GetByIdAsync(request.BookId, cancellationToken);
+        if (book == null)
         {
             return new ReturnBookResponse("Book with passed Id does not exists");
         }
 
-        dbBook.IsBorrowed = false;
-        dbBook.BorrowerId = null;
-        //dbBook.ModifiedBy = userName;
-
-        await _context.SaveChangesAsync(cancellationToken);
+        _bookRepository.ReturnBook(request.BookId, cancellationToken);
 
         return new ReturnBookResponse();
     }

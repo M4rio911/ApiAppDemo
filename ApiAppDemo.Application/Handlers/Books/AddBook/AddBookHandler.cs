@@ -1,4 +1,5 @@
 ﻿using ApiAppDemo.Application.Interfaces.MediatR;
+using ApiAppDemo.Application.Interfaces.Repositories;
 using ApiAppDemo.Domin.Entities;
 using ApiAppDemo.Persistance;
 using Microsoft.AspNetCore.Http;
@@ -8,42 +9,25 @@ namespace ApiAppDemo.Application.Handlers.Books.AddBook;
 
 public class AddBookHandler : ICommandHandler<AddBook, AddBookResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
+    private readonly IBookRepository _bookRepository;
 
-    public AddBookHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    public AddBookHandler(IBookRepository bookRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _bookRepository = bookRepository;
     }
 
     public async Task<AddBookResponse> Handle(AddBook request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
-
         var newBook = new Book
         {
             AuthorId = request.AuthorId,
             CategoryId = request.CategoryId,
             Title = request.Title,
             Description = request.Description,
-            IsBorrowed = false,
-
-            //CreatedBy = userName,
-            //ModifiedBy = userName
-            CreatedBy = "test",
-            ModifiedBy = "test"
+            IsBorrowed = false
         };
 
-
-        _context.Books.Add(newBook);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _bookRepository.AddAsync(newBook, cancellationToken);
 
         return new AddBookResponse();
     }

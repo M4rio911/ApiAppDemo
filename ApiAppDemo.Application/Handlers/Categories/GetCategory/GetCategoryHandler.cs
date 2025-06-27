@@ -1,38 +1,27 @@
-﻿using ApiAppDemo.Application.Interfaces.MediatR;
-using ApiAppDemo.Persistance;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
+﻿using ApiAppDemo.Application.Dto.Categories;
+using ApiAppDemo.Application.Interfaces.MediatR;
+using ApiAppDemo.Application.Interfaces.Repositories;
 
 namespace ApiAppDemo.Application.Handlers.Categories.GetCategory;
 
 public class GetCategoryHandler : ICommandHandler<GetCategory, GetCategoryResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
-
-    public GetCategoryHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    private readonly ICategoryRepository _categoryRepository;
+    public GetCategoryHandler(ICategoryRepository categoryRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _categoryRepository = categoryRepository;
     }
 
     public async Task<GetCategoryResponse> Handle(GetCategory request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
+        var dbCategory = await _categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
 
-        var dbCategory = await _context.Categories
-            .Where(x => x.Id == request.CategoryId)
-            .FirstOrDefaultAsync(cancellationToken);
+        var categoryDto = new CategoryDto
+        {
+            Id = dbCategory.Id,
+            Name = dbCategory.Name
+        };
 
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return new GetCategoryResponse() { Category = dbCategory };
+        return new GetCategoryResponse() { Category = categoryDto };
     }
 }
