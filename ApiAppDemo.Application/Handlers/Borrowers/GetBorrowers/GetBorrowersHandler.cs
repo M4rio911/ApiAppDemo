@@ -1,4 +1,5 @@
 ﻿using ApiAppDemo.Application.Interfaces.MediatR;
+using ApiAppDemo.Application.Interfaces.Repositories;
 using ApiAppDemo.Persistance;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -8,29 +9,15 @@ namespace ApiAppDemo.Application.Handlers.Borrowers.GetBorrowers;
 
 public class GetBorrowersHandler : ICommandHandler<GetBorrowers, GetBorrowersResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
-
-    public GetBorrowersHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    private readonly IBorrowerRepository _borrowerRepository;
+    public GetBorrowersHandler(IBorrowerRepository borrowerRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _borrowerRepository = borrowerRepository;
     }
 
     public async Task<GetBorrowersResponse> Handle(GetBorrowers request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
-
-        var dbBorrowers = await _context.Borrowers
-            .ToListAsync(cancellationToken);
-
-        await _context.SaveChangesAsync(cancellationToken);
+        var dbBorrowers = await _borrowerRepository.GetBorrowersAsync(cancellationToken);
 
         return new GetBorrowersResponse() { Borrowers = dbBorrowers };
     }

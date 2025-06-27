@@ -6,4 +6,5 @@ public class EditAuthorResponse : BaseResponse
 {
     public EditAuthorResponse() : base() { }
     public EditAuthorResponse(List<string> errors) : base(errors) { }
+    public EditAuthorResponse(string error) : base(error) { }
 }

@@ -1,40 +1,29 @@
 ﻿using ApiAppDemo.Application.Interfaces.MediatR;
-using ApiAppDemo.Persistance;
-using Microsoft.AspNetCore.Http;
+using ApiAppDemo.Application.Interfaces.Repositories;
+using ApiAppDemo.Domin.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ApiAppDemo.Application.Handlers.Categories.EditCategory;
 
 public class EditCategoryHandler : ICommandHandler<EditCategory, EditCategoryResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
-
-    public EditCategoryHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    private readonly ICategoryRepository _categoryRepository;
+    public EditCategoryHandler(ICategoryRepository categoryRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _categoryRepository = categoryRepository;
     }
 
     public async Task<EditCategoryResponse> Handle(EditCategory request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
+        var category = await _categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
 
-        var dbCategory = await _context.Categories
-            .Where(x => x.Id == request.CategoryId)
-            .FirstOrDefaultAsync(cancellationToken);
+        if (category is null)
+            return new EditCategoryResponse("No category found");
 
-        dbCategory.ModifiedBy = "test";
-        dbCategory.Name = request.Name;
+        category.Name = request.Name;
+        category.ModifiedBy = "test";
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await _categoryRepository.SaveChangesAsync(cancellationToken);
 
         return new EditCategoryResponse();
     }

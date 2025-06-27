@@ -1,4 +1,6 @@
-﻿using ApiAppDemo.Application.Interfaces.MediatR;
+﻿using ApiAppDemo.Application.Dto.Authors;
+using ApiAppDemo.Application.Interfaces.MediatR;
+using ApiAppDemo.Application.Interfaces.Repositories;
 using ApiAppDemo.Persistance;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -8,30 +10,30 @@ namespace ApiAppDemo.Application.Handlers.Authors.GetAuthors;
 
 public class GetAuthorsHandler : ICommandHandler<GetAuthors, GetAuthorsResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
+    private readonly IAuthorRepository _authorRepository;
 
-    public GetAuthorsHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    public GetAuthorsHandler(IAuthorRepository authorRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _authorRepository = authorRepository;
     }
 
     public async Task<GetAuthorsResponse> Handle(GetAuthors request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
+        var dbAuthors = await _authorRepository.GetAuthorsAsync(cancellationToken);
 
-        var dbAuthors = await _context.Authors
-            .ToListAsync(cancellationToken);
+        var authorDtos = dbAuthors
+        .Select(a => new AuthorDto
+        {
+            Id = a.Id,
+            FirstName = a.FirstName,
+            LastName = a.LastName,
+            BirthDate = a.BirthDate
+        })
+        .ToList();
 
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return new GetAuthorsResponse() { Authors = dbAuthors };
+        return new GetAuthorsResponse
+        {
+            Authors = authorDtos
+        };
     }
 }

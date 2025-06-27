@@ -1,38 +1,33 @@
-﻿using ApiAppDemo.Application.Interfaces.MediatR;
-using ApiAppDemo.Persistance;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
+﻿using ApiAppDemo.Application.Dto.Authors;
+using ApiAppDemo.Application.Interfaces.MediatR;
+using ApiAppDemo.Application.Interfaces.Repositories;
 
 namespace ApiAppDemo.Application.Handlers.Authors.GetAuthor;
 
 public class GetAuthorHandler : ICommandHandler<GetAuthor, GetAuthorResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
+    private readonly IAuthorRepository _authorRepository;
 
-    public GetAuthorHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    public GetAuthorHandler(IAuthorRepository authorRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _authorRepository = authorRepository;
     }
 
     public async Task<GetAuthorResponse> Handle(GetAuthor request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
+        var dbAuthor = await _authorRepository.GetByIdAsync(request.AuthorId, cancellationToken);
 
-        var dbAuthor = await _context.Authors
-            .Where(x => x.Id == request.AuthorId)
-            .FirstOrDefaultAsync(cancellationToken);
+        if (dbAuthor is null)
+            return new GetAuthorResponse("No author found");
 
-        await _context.SaveChangesAsync(cancellationToken);
+        var authorDto = new AuthorDto
+        {
+            Id = dbAuthor.Id,
+            FirstName = dbAuthor.FirstName,
+            LastName = dbAuthor.LastName,
+            BirthDate = dbAuthor.BirthDate
+        };
 
-        return new GetAuthorResponse() { Author = dbAuthor };
+        return new GetAuthorResponse() { Author = authorDto };
     }
 }

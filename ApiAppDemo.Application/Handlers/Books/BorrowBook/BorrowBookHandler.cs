@@ -1,45 +1,27 @@
 ﻿using ApiAppDemo.Application.Interfaces.MediatR;
-using ApiAppDemo.Persistance;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
+using ApiAppDemo.Application.Interfaces.Repositories;
 
 namespace ApiAppDemo.Application.Handlers.Books.BorrowBook;
 
 public class BorrowBookHandler : ICommandHandler<BorrowBook, BorrowBookResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
-
-    public BorrowBookHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    private readonly IBookRepository _bookRepository;
+    private readonly IBorrowerRepository _borrowerRepository;
+    public BorrowBookHandler(IBookRepository bookRepository, IBorrowerRepository borrowerRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _bookRepository = bookRepository;
+        _borrowerRepository = borrowerRepository;
     }
 
     public async Task<BorrowBookResponse> Handle(BorrowBook request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
-
-        var dbBook = await _context.Books
-            .Where(x => x.Id == request.BookId)
-            .FirstOrDefaultAsync(cancellationToken);
-
+        var dbBook = await _bookRepository.GetByIdAsync(request.BookId, cancellationToken);
         if (dbBook == null)
         {
             return new BorrowBookResponse("Book with passed Id does not exists");
         }
 
-        var dbBorrower = await _context.Borrowers
-            .Where(x => x.Id == request.BorrowerId)
-            .FirstOrDefaultAsync(cancellationToken);
-
+        var dbBorrower = await _borrowerRepository.GetByIdAsync(request.BorrowerId, cancellationToken);
         if (dbBorrower == null) 
         { 
             return new BorrowBookResponse("Borrower with passed Id does not exists"); 
@@ -50,10 +32,7 @@ public class BorrowBookHandler : ICommandHandler<BorrowBook, BorrowBookResponse>
             return new BorrowBookResponse("Book is already borrowed");
         }
 
-        dbBook.IsBorrowed = true;
-        dbBook.BorrowerId = request.BorrowerId;
-
-        await _context.SaveChangesAsync(cancellationToken);
+        await _bookRepository.BorrowBook(request.BookId, request.BorrowerId, cancellationToken);
 
         return new BorrowBookResponse();
     }

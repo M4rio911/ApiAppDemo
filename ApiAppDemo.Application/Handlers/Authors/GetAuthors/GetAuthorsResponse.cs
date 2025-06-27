@@ -1,11 +1,11 @@
-﻿using ApiAppDemo.Application.Handlers.BaseModel;
-using ApiAppDemo.Domin.Entities;
+﻿using ApiAppDemo.Application.Dto.Authors;
+using ApiAppDemo.Application.Handlers.BaseModel;
 
 namespace ApiAppDemo.Application.Handlers.Authors.GetAuthors;
 
 public class GetAuthorsResponse : BaseResponse
 {
-    public IEnumerable<Author?> Authors{ get; set; }
+    public IEnumerable<AuthorDto?> Authors{ get; set; }
     public GetAuthorsResponse() : base() { }
     public GetAuthorsResponse(List<string> errors) : base(errors) { }
 }

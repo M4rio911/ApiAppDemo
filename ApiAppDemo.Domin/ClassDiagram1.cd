@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="ApiAppDemo.Domin.Entities.Author">
+    <Position X="3.5" Y="3.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAEAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Author.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ApiAppDemo.Domin.Entities.Borrower">
+    <Position X="7.25" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAEAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Borrower.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ApiAppDemo.Domin.Entities.Book">
+    <Position X="3.5" Y="0.75" Width="2.75" />
+    <AssociationLine Name="Category" Type="ApiAppDemo.Domin.Entities.Category" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.425" Y="3.137" />
+        <Point X="5.425" Y="3.45" />
+        <Point X="8.5" Y="3.45" />
+        <Point X="8.5" Y="3.75" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAACAAgAAAAgAkAAgAAAAAAAAAAAAAACABAAAAAACAA=</HashCode>
+      <FileName>Book.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Author" />
+      <Property Name="Borrower" />
+      <Property Name="Category" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ApiAppDemo.Domin.Entities.Category">
+    <Position X="7.25" Y="3.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Category.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

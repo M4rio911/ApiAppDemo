@@ -1,4 +1,5 @@
 ﻿using ApiAppDemo.Application.Interfaces.MediatR;
+using ApiAppDemo.Application.Interfaces.Repositories;
 using ApiAppDemo.Persistance;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -8,36 +9,21 @@ namespace ApiAppDemo.Application.Handlers.Books.RemoveBook;
 
 public class RemoveBookHandler : ICommandHandler<RemoveBook, RemoveBookResponse>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly AppDbContext _context;
-
-    public RemoveBookHandler(IHttpContextAccessor httpContextAccessor, AppDbContext deliveryDbContext)
+    private readonly IBookRepository _bookRepository;
+    public RemoveBookHandler(IBookRepository bookRepository)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _context = deliveryDbContext;
+        _bookRepository = bookRepository;
     }
 
     public async Task<RemoveBookResponse> Handle(RemoveBook request, CancellationToken cancellationToken)
     {
-        //var user = _httpContextAccessor.HttpContext?.User;
-        //if (user == null)
-        //{
-        //    throw new UnauthorizedAccessException("User is not authenticated");
-        //}
-        //var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //var userName = user.Identities.FirstOrDefault().Name;
-
-        var dbBook = await _context.Books
-            .Where(x => x.Id == request.BookId)
-            .FirstOrDefaultAsync(cancellationToken);
-
+        var dbBook = await _bookRepository.GetByIdAsync(request.BookId, cancellationToken);
         if (dbBook == null)
         {
             return new RemoveBookResponse("Book with passed Id does not exists");
         }
 
-        _context.Books.Remove(dbBook);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _bookRepository.RemoveBook(dbBook.Id, cancellationToken);
 
         return new RemoveBookResponse();
     }

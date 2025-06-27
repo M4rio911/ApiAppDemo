@@ -6,4 +6,5 @@ public class EditCategoryResponse : BaseResponse
 {
     public EditCategoryResponse() : base() { }
     public EditCategoryResponse(List<string> errors) : base(errors) { }
+    public EditCategoryResponse(string error) : base(error) { }
 }
